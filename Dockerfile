@@ -30,9 +30,8 @@ ENV MAGENTO_ENABLE_SYNC_MARKER enable_sync
 ENV USE_UNISON_SYNC 1
 ENV MAGENTO_WARM_UP_STOREFRONT 0
 
-RUN m2init magento:install --no-interaction --webserver-home-port=80 
-
-RUN rm -rf /var/www/magento2/vendor/*
+RUN m2init magento:install --no-interaction --webserver-home-port=80 &&
+    rm -rf /var/www/magento2/vendor/*
 
 COPY ./apache-default.conf /etc/apache2/sites-enabled/
 COPY ./default-ssl.conf /etc/apache2/sites-enabled/
