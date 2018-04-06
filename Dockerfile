@@ -1,7 +1,5 @@
 FROM magento/magento2devbox-web
 
-RUN m2init magento:install --no-interaction --webserver-home-port=80 
-
 ENV USE_RABBITMQ 0
 ENV USE_REDIS_FULL_PAGE_CACHE 0
 ENV USE_REDIS_CACHE 0
@@ -31,6 +29,8 @@ ENV MAGENTO_STATE_PATH /home/magento2/state
 ENV MAGENTO_ENABLE_SYNC_MARKER enable_sync
 ENV USE_UNISON_SYNC 1
 ENV MAGENTO_WARM_UP_STOREFRONT 0
+
+RUN m2init magento:install --no-interaction --webserver-home-port=80 
 
 RUN rm -rf /var/www/magento2/vendor/*
 
