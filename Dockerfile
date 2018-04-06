@@ -30,16 +30,16 @@ ENV MAGENTO_ENABLE_SYNC_MARKER enable_sync
 ENV USE_UNISON_SYNC 1
 ENV MAGENTO_WARM_UP_STOREFRONT 0
 
-RUN m2init magento:install --no-interaction --webserver-home-port=80 &&
-    rm -rf /var/www/magento2/vendor/*
+RUN m2init magento:install --no-interaction --webserver-home-port=80 \
+    && rm -rf /var/www/magento2/vendor/*
 
 COPY ./apache-default.conf /etc/apache2/sites-enabled/
 COPY ./default-ssl.conf /etc/apache2/sites-enabled/
 COPY ./cmg-dev.conf /home/magento2/magento2/
-RUN cd /home/magento2/magento2/ &&
-    openssl req -config cmg-dev.conf -new -x509 -sha256 -newkey rsa:2048 -nodes -keyout cmg-dev.key.pem -days 3650 -out cmg-dev.cert.pem &&
-    cp cmg-dev.key.pem /etc/ssl/private/cmg-dev.key.pem &&
-    cp cmg-dev.cert.pem /etc/ssl/certs/cmg-dev.cert.pem &&
-    cd /
+RUN cd /home/magento2/magento2/ \
+    && openssl req -config cmg-dev.conf -new -x509 -sha256 -newkey rsa:2048 -nodes -keyout cmg-dev.key.pem -days 3650 -out cmg-dev.cert.pem \
+    && cp cmg-dev.key.pem /etc/ssl/private/cmg-dev.key.pem \
+    && cp cmg-dev.cert.pem /etc/ssl/certs/cmg-dev.cert.pem \
+    && cd /
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
