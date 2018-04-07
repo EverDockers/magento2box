@@ -31,18 +31,18 @@ ENV USE_UNISON_SYNC 1
 ENV MAGENTO_WARM_UP_STOREFRONT 0
 
 COPY ./auth.json /home/magento2/.composer/
-RUN su magento2 && m2init magento:install --no-interaction --webserver-home-port=80 \
-    && rm -rf /var/www/magento2/vendor/* \
-    && exit
+RUN cd /var/www/magento2  \
+composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition:2.1.6 .
+# RUN su magento2 -c "m2init magento:install --no-interaction --webserver-home-port=80" \
+#    && rm -rf /var/www/magento2/vendor/*
 
 COPY ./apache-default.conf /etc/apache2/sites-enabled/
 COPY ./default-ssl.conf /etc/apache2/sites-enabled/
 COPY ./cmg-dev.conf /home/magento2/magento2/
 RUN cd /home/magento2/magento2/ \
-    && su magento2 && openssl req -config cmg-dev.conf -new -x509 -sha256 -newkey rsa:2048 -nodes -keyout cmg-dev.key.pem -days 3650 -out cmg-dev.cert.pem \
-    && exit \
+    && su magento2 -c "openssl req -config cmg-dev.conf -new -x509 -sha256 -newkey rsa:2048 -nodes -keyout cmg-dev.key.pem -days 3650 -out cmg-dev.cert.pem" \
     && cp cmg-dev.key.pem /etc/ssl/private/cmg-dev.key.pem \
     && cp cmg-dev.cert.pem /etc/ssl/certs/cmg-dev.cert.pem \
     && cd /
 
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+#ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
